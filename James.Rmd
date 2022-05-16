@@ -1,5 +1,5 @@
 ---
-title: "Homework 1 S22"
+title: "James"
 author: "Huaye Yang"
 date: "02/04/2022"
 output:
