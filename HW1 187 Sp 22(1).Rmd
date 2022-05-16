@@ -1,0 +1,248 @@
+---
+title: "Homework 1 S22"
+author: "Huaye Yang"
+date: "02/04/2022"
+output:
+  pdf_document: default
+  html_document: default
+  word_document: default
+---
+
+##### Homework Introduction
+
+The goal of this homework is to get started coding in R and in R Markdown. 
+
+Add warning = FALSE and message = FALSE to the {} below to make the output look more clean.  
+
+In the remaining code chunks, add warning = FALSE and/or message = FALSE only as needed (don't just write both in every chunk.)
+
+
+```{r setup}
+knitr::opts_chunk$set(echo = TRUE)
+
+#  Before you start, load the tidyverse.  
+library(tidyverse)
+
+
+```
+
+### Part 1
+
+#### a. Create the data set *Students*
+
+On this homework, we create a data set by entering vectors and putting them together to form the tibble, *Students*
+
+In the code chunk below:
+
+First create the following vectors
+
+- ID:         A sequence of numbers from 1 to 10 that is unique for each student
+- year:       Soph, Jr, Sr, Sr, Jr, Soph, Soph, Sr, Jr, Sr
+- phonetime:  8, 2, 4, 7, 2, 1, 10, 3, 5, NA
+- gpa:        2.75, 3.5, 3.2, 3.5, 3.5, 3, 2.5, 3.3, 2.9, 3.8
+- job:        FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE
+
+
+Join the 5 vectors together in a tibble called Students
+
+Afterwards, remove the 5 vectors from the global environment
+
+Then print out the Student tibble
+
+```{r 1a_studentdata}
+# Write lines of R code to do the following tasks.
+# Include comments describing what you are doing.
+
+# First, create the five vectors below:
+ID <-seq(1:10)
+year<-c("soph","Jr", "Sr", "Sr", "Jr", "Soph", "Soph", "Sr", "Jr", "Sr")
+phonetime<-c(8, 2, 4, 7, 2, 1, 10, 3, 5, NA)
+gpa<-c(2.75, 3.5, 3.2, 3.5, 3.5, 3, 2.5, 3.3, 2.9, 3.8)
+job<-c(FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE, FALSE, TRUE)
+
+
+# Create the Students data frame next:
+students<-data.frame(ID,year,phonetime,gpa,job)
+
+
+# Use an R function to remove the five vectors from the global environment
+remove(ID,year,phonetime,gpa,job)
+
+# Print the data frame, by typing Students. You should see a 'tibble' of the data file.
+students
+
+```
+
+
+
+
+#### b. Stats on Students
+
+- Find the mean and median of GPA and phonetime
+
+
+```{r 1b_gpa_phone}
+# mean 
+mean(students$gpa)
+mean(students$phonetime)
+# median
+median(students$gpa)
+median(students$phonetime)
+## we get NA for mean and median of phonetime, replace NA with 0
+students[is.na(students)]<-0
+students
+## repeat mean and median calculation above
+
+```
+
+- Create a table showing the frequencies for year. 
+
+```{r 1b_year_table}
+
+table(students$year)
+
+
+```
+
+
+- Calculate the percentage of students that have a job.
+
+```{r 1b_job_prop}
+
+table(students$job)
+## Among 10 students, there are 5 students who have job
+## proportion = 5/10 = 50%
+
+```
+
+
+#### c. Plots of Students
+
+Create a boxplot of gpa by job. 
+
+Run the code described below.  
+
+
+```{r 1c_boxplot}
+
+# load ggplot2
+library(ggplot2)
+
+#  Use ggplot to make a boxplot of gpa by job.  
+#  Include fill=job inside geom_boxplot() so the boxplots are different colors.
+ggplot(data=students,
+       mapping=aes(x=job, y=gpa,fill=job))+
+  geom_boxplot()
+
+```
+
+
+Next, create a scatterplot of gpa by phonetime
+
+```{r 1c_scatterplot}
+# Use ggplot to make a scatterplot of gpa by phonetime.
+ggplot(data=students,
+       mapping=aes(x=phonetime,y=gpa))+
+  geom_point()
+
+```
+
+Describe here the two relationships you observe.  
+## Students who have higher gpa tend to have jobs comparing to those who have lower gpa. There is a negative linear relationship between phonetime and gpa.
+
+What seems to be the effect of having a job for these students?  
+## gpa
+
+What seems to be the effect of time spent on one's phone?  
+## Students who have spent more time using their phone tend to have lower gpa.
+
+Do you think these (made-up) students are typical, or do you think the actual trend among all students could be different?
+## I think the actual trend would be different because there might be other factors related to finding a job(for example, working experience, majors,etc). And there are also other factors that have effect on gpa other than phonetime.
+
+
+
+### Part 2
+
+#### a. Read "Lebron James.csv"
+
+- Download the data file 'Lebron James.csv' from Blackboard and put it in the same folder as this markdown file. 
+
+- Create data frame LBJ using **read.csv()** then save it as a tibble using **tibble()**.
+
+- Print the first 10 rows of the data set.
+
+```{r 2a_LBJ}
+
+## load readr and save csv file as data1
+library(readr)
+data1 <- read_csv("Lebron James.csv")
+View(data1)
+
+## save it as a tibble
+tibble(data1)
+
+## print first 10 rows 
+head(data1,10)
+## or
+print(data1[1:10])
+
+
+```
+
+#### b. Better at Home or Away?
+
+Calculate the 5 number summary for *Shot_Proportion* when Lebron plays at home and away. Use the **aggregate()** function. Then describe the difference, if any, between when he plays home vs away games.
+
+
+```{r 2b_shot_per}
+
+## 5 number summary using aggregate()
+diff_min<-aggregate(data1$Shot_Proportion,list(HOME=data1$Home),fivenum)
+
+#or
+home<-subset(data1,data1$Home=="Home")
+away<-subset(data1,data1$Home=="Away")
+fivenum(home$Shot_Proportion)
+fivenum(away$Shot_Proportion)
+
+## draw a side-by-side ox plot
+ggplot(data=data1,
+       mapping=aes(x=Home,y=Shot_Proportion,fill=Home))+
+  geom_boxplot()
+
+
+```
+
+## The interval of people who play at home is higher than people who are away from home, but the two datasets tend to have same median and same width of interval.(from the boxplot, we can see that they have same amount of outliers)
+
+#### c. Points by Time Played: Plot and Correlation 
+
+
+Run the specified code below. When done, describe the relationship between time played (in seconds) and points scored.  
+
+
+
+```{r 2c_min_vs_points}
+# Make a scatterplot of Points by time_played.
+# Need to convert minutes played from a string to a number (in seconds). 
+# Use the code below for the conversion
+
+data1 <- data1 %>% 
+  mutate(time = lubridate::ms(substr(Minutes_Played, 1, 5)),
+         seconds_played = lubridate::period_to_seconds(time))
+  
+  
+
+#  Create the scatterplot:
+
+ggplot(data=data1,
+       mapping=aes(x=seconds_played,y=Points))+
+  geom_point()
+
+
+#  Use the function cor.test(xvector, yvector) to help assess the relationship
+
+cor.test(data1$seconds_played,data1$Points)
+
+```
+## As we can see from the correlation=0.3436, there is a positive linear relatioinship(not very strong one) between time played in seconds and scored points.

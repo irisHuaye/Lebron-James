@@ -1,0 +1,202 @@
+---
+title: "STAT/CS 087 Homework 1"
+author: "Solutions"
+date: "02/02/2022"
+output: word_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Instructions
+
+For this homework assignment, you will need to submit a knitted document from R markdown. Make sure to check that your knitted document has both the code you wrote, the relevant results, and description. 
+
+While minor departures from techniques taught in class are ok, your code should be similar to what we've seen in class.
+
+### Question 1
+
+#### Part 1a)
+
+Create a vector called height with values: 72, 70, 64, 68, 63, 60, 73, 62, 66. 
+
+Then find the average height.
+
+```{r 1a_height}
+height <- c(72, 70, 64, 68, 63, 60, 73, 62, 66)
+mean(height)
+```
+
+
+
+#### Part 1b)
+
+Create a vector called weight with values: 195, 200, 120, 165, missing, 100, 210, 140, 145. The vector should indicate that the 5th weight is missing and the value in the vector is not "missing"
+
+Then find the average weight.
+
+```{r 1b_weight}
+weight <- c(195, 200, 120, 165, NA, 100, 210, 140, 145)
+mean(weight, na.rm = T)
+
+```
+
+
+
+#### Part 1c)
+
+Create a vector named instate with values: yes, yes, no, no, no, no, yes, no, yes
+
+Make sure the instate vector is printed in your knitted document!
+
+```{r 1c_instate}
+instate <- c("yes", "yes", "no", "no", "no", "no", "yes", "no", "yes")
+instate
+
+```
+
+
+
+
+#### 1d)
+
+Use a shortcut to create a vector called ID with the integers from 1 to 9 that will be a unique identifier for each student. Make sure the ID vector is printed in your knitted document!
+
+```{r 1d_ID}
+ID <- 1:9
+ID
+
+```
+
+
+
+
+
+#### 1e)
+Combine the 4 variables together in a dataset named Students with the columns in the following order:
+
+- ID
+- instate
+- height
+- weight 
+
+After creating the data frame, remove the 4 variables from the global environment using the provided code. 
+
+Make sure that Students is shown in the knitted document
+
+```{r 1e_Students}
+Students <- data.frame(ID, instate, height, weight)
+
+
+# This line should be last in this code chunk.
+rm(height, weight, instate, ID)
+```
+
+
+For each variable, should it be categorical or quantitative?
+
+- ID: Categorical
+- instate: Categorical
+- height: Quantitative
+- weight: Quantitative
+
+
+#### 1f)
+
+Use an appropriate function to check how each of the 4 variables are stored in the Students data set. 
+
+Correct any columns that are not stored the same as your answer in part e). Then use str() on the corrected data frame to show the column is the correct type.
+
+```{r 1f_variable_type}
+# Using str() to check how each column is currently stored:
+str(Students)
+
+# Using as.character to change ID to a character type vector
+Students$ID <- as.character(Students$ID)
+
+# Using str() to check if ID is correct:
+str(Students)
+```
+
+
+
+
+#### 1g)
+
+Create a new variable inside the Students data frame called BMI, where
+
+BMI = 703.7 x Weight / Height^2
+
+If done correctly, there shouldn't be a vector in the global environment called BMI, only in the Students data.frame
+
+What is the average BMI?
+
+```{r}
+# Calculating BMI
+Students$BMI <- 703.7*Students$weight/(Students$height)^2
+
+# Finding the mean of BMI:
+mean(Students$BMI, na.rm = T)
+
+```
+
+
+
+
+
+### Question 2
+
+#### 2a)
+
+Import the “Lebron James.csv” file and save it as LBJ. 
+
+```{r 2a_import_data}
+
+LBJ <- read.csv("Lebron James.csv")
+
+```
+
+
+How many variables are in the data? *16 columns --> 16 variables*
+
+
+How many cases? *539 rows --> 539 cases*
+
+
+#### 2b
+
+Print out a list of only the names of the variables stored in the data set
+
+```{r 2b_var_names} 
+names(LBJ)
+
+
+```
+
+
+#### 2c
+
+Based on the names of the csv file and names of the variables, what are the cases?
+
+*Each row describes a NBA game played by Lebron James --> Cases = Lebron James NBA Games*
+
+
+
+#### 2d
+
+How many variables are categorical?
+
+*Season, Team, Home, Opponent, and Game_Result are all categorical --> 5 categorical variables*
+
+
+How many variables are quantitative?
+
+*All other variables are quantitative --> 16 - 5 = 11*
+
+*Although minutes_played is recorded as a character, it still measures a quantity about each game (how many minutes he was on the court), so it is quantitative. It's just not recorded in the CSV in a way R recognizes it as quantitative.*
+
+
+
+
+
